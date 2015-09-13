@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Spritecreator</title>
+		<style type="text/css">
+			#menu{
+				position: fixed;
+			}
+		</style>
+		<script>
+			var canvas;
+			var c;
+			var rowHeight = 0;
+			var colWidth = 0;
+			var lastImgHeight;
+			var directory = 'Img/m1/';
+			var list;
+			var images = new Array();
+			var imagesNumber = 0;
+			var dirnumber = 0;
+			var directions = new Array();
+			directions[0] = "downLeft";
+			directions[1] = "down";
+			directions[2] = "downRight";
+			directions[3] = "right";
+			directions[4] = "upRight";
+			directions[5] = "up";
+			directions[6] = "upLeft";
+			directions[7] = "left";
+			
+
+			window.onload = function() {
+				canvas = document.getElementById("myCanvas");
+				canvas.width = 1;
+				canvas.height = 1;
+				c = canvas.getContext("2d");
+				list = document.getElementById('fileList');
+				document.getElementById('dirnumber').innerHTML = directions[0];
+			};
+			function getImage() {
+				window.location = canvas.toDataURL("image/png");
+			}
+
+			function nextRow() {
+				rowHeight += lastImgHeight;
+				colWidth = 0;
+			}
+			
+			function nextDir(){
+				
+				if(dirnumber == 7)
+					dirnumber = 0;
+					
+				else
+				++dirnumber;
+				
+				document.getElementById('dirnumber').innerHTML = directions[dirnumber];
+			}
+
+			function loadImage(imgsrc) {
+				var imageObj = new Image();
+				imageObj.src = imgsrc;
+				imageObj.onload = function() {
+					if (canvas.width < colWidth + imageObj.width) {
+					 canvas.width += imageObj.width;
+					 }
+					 if (canvas.height < rowHeight + imageObj.height) {
+					 canvas.height += imageObj.height;
+					 }
+
+					images[imagesNumber] = {
+						"img" : imageObj,
+						"colWidth" : colWidth,
+						"rowHeight" : rowHeight
+					};
+					imagesNumber++;
+
+					for (var y = 0; y < imagesNumber; y++) {
+						c.drawImage(images[y].img, images[y].colWidth, images[y].rowHeight);
+					}
+					colWidth += imageObj.width;
+					list.removeChild(document.getElementsByName(imgsrc)[0]);
+					lastImgHeight = imageObj.height;
+
+				};
+			}
+
+			function putImage() {
+				var input = document.getElementById('imagefiles');
+
+				for (var x = 0; x < input.files.length; x++) { 
+					var li = document.createElement('li');
+					li.innerHTML = '<button onclick=loadImage("' + directory + "/"+ directions[dirnumber] + "/" + input.files[x].name + '")>' + input.files[x].name + ' </button>';
+					var attvalue = directory + "/"+ directions[dirnumber] + "/" + input.files[x].name;
+					li.setAttribute("name", attvalue);
+					list.appendChild(li);
+				}
+
+			}
+		</script>
+	</head>
+	<body><div id="menu">
+		<label>Select file:
+			<input type="file" id="imagefiles" accept="image/jpeg, image/png" multiple="" />
+		</label>
+		<br />
+		<br />
+		<button onclick="putImage()">
+			hinzufügen
+		</button>
+		<button onclick="nextRow()">
+			nächste Reihe
+		</button>
+		<button onclick="getImage()">
+			speichern
+		</button>
+		<br />
+		<div id="dirnumber"></div>
+		<button onclick="nextDir()">
+			nächste Richtung
+		</button>
+		<br />
+			<div id="fileList"></div>
+		</div>
+		<canvas id="myCanvas" style="border: 1px solid black;">
+			Your browser doesn't include support for the canvas tag.
+		</canvas>
+		<br />
+	</body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="de">
+	<head>
+		<meta charset="UTF-8" />
+		<title>Ex0dus</title>
+		<style type="text/css">
+			html, body {
+				width: 100%;
+				height: 100%;
+				margin: 0px;
+				overflow: hidden;
+				background-color: #BDBDBD;
+			}
+			#myCanvas {
+				z-index: 0;
+				margin: 0;
+				padding: 0;
+			}
+			#gui {
+				z-index: 10;
+				position: absolute;
+				margin-left: 50px;
+				margin-top: 100px;
+				padding: 0;
+				color: #FFF;
+			}
+			#screen {
+				z-index: 20;
+				position: absolute;
+				margin: 0;
+				padding: 0;
+				width: 100%;
+				height: 100%;
+				color: #000;
+			}
+			.button {
+				width: 100%;
+			}
+		</style>
+		<script charset="utf-8" src="scripts/sprite.js"></script>
+		<script charset="utf-8" src="scripts/worker.js"></script>
+		<script charset="utf-8" src="scripts/game.js"></script>
+		<script charset="utf-8" src="scripts/map.js"></script>
+		<script charset="utf-8" src="scripts/canvas.js"></script>
+		<script type="text/javascript">
+			var SelectedUser;
+			var menu;
+			window.onload = function() {
+				var newGame = new MyCanvas();
+
+					(function() {
+						var lastTime = 0;
+						var vendors = ['ms', 'moz', 'webkit', 'o'];
+						for (var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x) {
+							window.requestAnimationFrame = window[vendors[x] + 'RequestAnimationFrame'];
+							window.cancelAnimationFrame = window[vendors[x] + 'CancelAnimationFrame'] || window[vendors[x] + 'CancelRequestAnimationFrame'];
+						}
+						if (!window.requestAnimationFrame)
+							window.requestAnimationFrame = function(callback) {
+								var currTime = new Date().getTime();
+								var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+								setTimeout(function() {
+									callback(currTime + timeToCall);
+								}, timeToCall);
+								lastTime = currTime + timeToCall;
+							};
+						if (!window.cancelAnimationFrame)
+							window.cancelAnimationFrame = function(id) {
+								clearTimeout(id);
+							};
+					})();
+
+					(function run() {
+							newGame.run();
+
+						requestAnimationFrame(run);
+					})();
+
+					document.addEventListener('mousedown', function(event) {
+							newGame.mousedown(event);
+					});
+
+					document.addEventListener('mouseup', function(event) {
+							newGame.mouseup(event);
+					});
+
+					document.addEventListener('mousemove', function(event) {
+							newGame.mousemove(event);
+					});
+			};
+
+		</script>
+	</head>
+	<body oncontextmenu="return false;">
+		<div id="screen">
+		</div>
+		<div id="gui">
+			<div id="fps"></div>
+			<div id="interpol"></div>
+			<div id="info"></div>
+			<div id="pos"></div>
+			<div id="pos1"></div>
+			<div id="pos2"></div>
+			<div id="pos3"></div>
+			<div id="scroll"></div>
+			<div id="mouseinfo"></div>
+			<div id="timer"></div>
+		</div>
+		<canvas id="myCanvas" width="100" height="100">
+			Your browser doesn't include support for the canvas tag.
+		</canvas>
+	</body>
+</html>
